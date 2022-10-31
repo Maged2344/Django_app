@@ -36,7 +36,7 @@ spec:
             gcloud auth activate-service-account --key-file="$GCLOUD_CREDS"
            apt-get install google-cloud-sdk-app-engine-java kubectl -y
             gcloud container clusters get-credentials gke --zone us-central1-a --project annular-haven-365520
-            kubectl apply -f 
+            kubectl apply -f ./Deploument/app.yml
           '''
         }
       }
