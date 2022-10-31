@@ -1,0 +1,19 @@
+pipeline {
+  agent any
+  environment {
+    CLOUDSDK_CORE_PROJECT='x:y'
+  }
+  stages {
+    stage('test') {
+      steps {
+        withCredentials([file(credentialsId: 'serviceaccount', variable: 'GCLOUD_CREDS')]) {
+          sh '''
+            gcloud version
+            gcloud auth activate-service-account --key-file="$GCLOUD_CREDS"
+            gcloud compute zones list
+          '''
+        }
+      }
+    }
+  }
+}
