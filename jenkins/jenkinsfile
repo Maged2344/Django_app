@@ -1,0 +1,39 @@
+pipeline {
+     agent {
+       label "ubuntu"
+    }
+    stages {
+
+        stage('Prepare') {
+            steps {
+              git branch: 'main', credentialsId: 'github_auth', url: 'https://github.com/Alialshemy/jenkins_lab.git'      
+              sh "echo cloning sucessfully"
+            }
+            }
+            
+        
+         stage('build') {
+            steps {
+                // Get some code from a GitHub repository
+                sh "docker build -t alimohamed125/app:v1 ."
+            }
+            
+            
+          
+        }
+        // deploy in ubuntu agent 
+         stage('Deploy') {
+            steps {
+                // Get some code from a GitHub repository
+                sh "docker run -d -p 80:80 alimohamed125/app:v1"
+            }
+             post{
+                success{
+                slackSend channel: 'test', message: 'app deploy successfully'
+                }
+            }
+          
+        }
+    }
+}
+
