@@ -1,2 +1,1 @@
-# jenkins_lab
-# Django_app
+# Django App with jenkins pipeline
