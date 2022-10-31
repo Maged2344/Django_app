@@ -1,39 +1,40 @@
 pipeline {
-     agent {
-       label "ubuntu"
+  agent {
+    kubernetes {
+      yaml '''
+apiVersion: v1
+kind: Pod
+metadata:
+  name: buildah
+spec:
+  containers:
+  - name: buildah
+    image: quay.io/buildah/stable:v1.23.1
+    command:
+    - cat
+    tty: true
+    securityContext:
+      privileged: true
+    volumeMounts:
+      - name: varlibcontainers
+        mountPath: /var/lib/containers
+  volumes:
+    - name: varlibcontainers
+'''   
     }
-    stages {
-
-        stage('Prepare') {
-            steps {
-              git branch: 'main', credentialsId: 'github_auth', url: 'https://github.com/Alialshemy/jenkins_lab.git'      
-              sh "echo cloning sucessfully"
-            }
-            }
-            
-        
-         stage('build') {
-            steps {
-                // Get some code from a GitHub repository
-                sh "docker build -t alimohamed125/app:v1 ."
-            }
-            
-            
-          
+  }
+  options {
+    buildDiscarder(logRotator(numToKeepStr: '3'))
+    durabilityHint('PERFORMANCE_OPTIMIZED')
+    disableConcurrentBuilds()
+  }
+  stages {
+    stage('Build with Buildah') {
+      steps {
+        container('buildah') {
+          sh 'buildah build -t darinpope/jenkins-example-buildah:8.5-230 .'
         }
-        // deploy in ubuntu agent 
-         stage('Deploy') {
-            steps {
-                // Get some code from a GitHub repository
-                sh "docker run -d -p 80:80 alimohamed125/app:v1"
-            }
-             post{
-                success{
-                slackSend channel: 'test', message: 'app deploy successfully'
-                }
-            }
-          
-        }
+      }
     }
+  }
 }
-
