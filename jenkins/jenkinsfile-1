@@ -1,19 +1,53 @@
 pipeline {
-  agent any
+  agent {
+    kubernetes {
+      yaml '''
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sdk
+spec:
+  containers:
+  - name: sdk
+    image:  google/cloud-sdk
+    command:
+    - cat
+    tty: true
+    securityContext:
+      privileged: true
+    volumeMounts:
+      - name: varlibcontainers
+        mountPath: /var/lib/containers
+  volumes:
+    - name: varlibcontainers
+'''   
+    }
+  }
   environment {
-    CLOUDSDK_CORE_PROJECT='x:y'
+    CLOUDSDK_CORE_PROJECT='annular-haven-365520'
+    CLIENT_EMAIL='annular-haven-365520-bastion@annular-haven-365520.iam.gserviceaccount.com'
   }
   stages {
-    stage('test') {
+    stage('Deployment') {
       steps {
+        container('sdk') {
         withCredentials([file(credentialsId: 'serviceaccount', variable: 'GCLOUD_CREDS')]) {
           sh '''
-            gcloud version
             gcloud auth activate-service-account --key-file="$GCLOUD_CREDS"
-            gcloud compute zones list
+           apt-get install google-cloud-sdk-app-engine-java kubectl -y
+            gcloud container clusters get-credentials gke --zone us-central1-a --project annular-haven-365520
+            kubectl apply -f 
           '''
         }
       }
+      }
+    }
+  }
+  post {
+    always {
+        container('sdk') {
+      sh 'gcloud auth revoke $CLIENT_EMAIL'
+        }
     }
   }
 }
