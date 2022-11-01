@@ -21,7 +21,11 @@
   -  pull code from github 
   -  build Django docker image 
   -  push this image to dockerhub
+  -  triger CD pipline to run
   ![Pipline](https://github.com/Alialshemy/Django_app/blob/main/images/CI.png)
+# create CD Pipline
+  - apply deployment application in K8s
+   ![Pipline] (https://github.com/Alialshemy/Django_app/blob/main/images/CD.png)
 
 
 
