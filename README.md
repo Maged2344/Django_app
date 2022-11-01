@@ -16,12 +16,12 @@
  - github Credentials
  - dockerhub Credentials
  - serviceaccount Credentials
- [Credentials](https://github.com/Alialshemy/Django_app/blob/main/images/Credentials.png)
+ ![Credentials](https://github.com/Alialshemy/Django_app/blob/main/images/Credentials.png)
 # create CI pipline :
   -  pull code from github 
   -  build Django docker image 
   -  push this image to dockerhub
-  [Pipline](https://github.com/Alialshemy/Django_app/blob/main/images/CI.png)
+  ![Pipline](https://github.com/Alialshemy/Django_app/blob/main/images/CI.png)
 
 
 
